@@ -1,0 +1,13 @@
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: lutergs
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

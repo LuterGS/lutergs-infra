@@ -1,0 +1,34 @@
+# service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ntfy-test
+  namespace: lutergs
+spec:
+  selector:
+    app: ntfy
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+---
+## cert-manager
+#apiVersion: cert-manager.io/v1
+#kind: Certificate
+#metadata:
+#  name: ntfy2-lutergs-dev
+#  namespace: cert-manager
+#spec:
+#  # The secret name where cert-manager should store the signed certificate
+#  secretName: ntfy2-lutergs-dev-tls
+#  dnsNames:
+#    - ntfy2.lutergs.dev
+#  # Duration of the certificate
+#  duration: 168h
+#  # Renew a day before the certificate expiration
+#  renewBefore: 24h
+#  # Reference the Origin CA Issuer you created above, which must be in the same namespace.
+#  issuerRef:
+#    group: cert-manager.k8s.cloudflare.com
+#    kind: OriginIssuer
+#    name: prod-issuer

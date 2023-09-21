@@ -1,0 +1,17 @@
+variable "aws-github-oidc-provider" {}
+
+variable "aws-access-key" {
+  type = string
+}
+
+variable "aws-secret-key" {
+  type = string
+}
+
+variable "aws-region" {
+  type = string
+}
+
+variable "github-access-token" {
+  type = string
+}
