@@ -1,6 +1,5 @@
-// aws ECR
 resource "aws_ecr_repository" "default" {
-  name = "lutergs-backend-batch"
+  name = "lutergs-backend"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -77,8 +76,8 @@ data "aws_iam_policy_document" "default_policy" {
 
 // create role of github actions
 resource "aws_iam_role" "default_role" {
-  name = "github-repo-lutergs-backend-batch"
-  description = "role of github actions in repo lutergs-backend-batch"
+  name = "github-repo-lutergs-backend"
+  description = "role of github actions in repo lutergs-backend"
   assume_role_policy = data.aws_iam_policy_document.trust_policy.json
   inline_policy {
     name = "default-policy"
