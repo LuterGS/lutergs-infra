@@ -10,6 +10,9 @@ variable "github-access-token" { type = string }
 // vultr variables
 variable "vultr-apk-token" { type = string }
 
+// cloudflare variables
+variable "cloudflare-global-api-key" { type = string }
+
 // module variables
 variable "lutergs-backend-kubernetes-secret"        { type = map(any) }
 variable "lutergs-backend-batch-kubernetes-secret"  { type = map(string) }

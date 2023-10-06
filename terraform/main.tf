@@ -14,10 +14,49 @@ terraform {
       source = "vultr/vultr"
       version = "2.16.1"
     }
+
+    kubectl = {
+      source  = "alekc/kubectl"
+      version = ">= 2.0.2"
+    }
+
+    helm = {
+      source  = "hashicorp/helm"
+      version = "2.5.0"
+    }
+
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 4.0"
+    }
   }
   required_version = ">= 1.2.0"
 }
 
+provider "vultr" {
+  api_key     = var.vultr-apk-token
+  rate_limit  = 100
+  retry_limit = 3
+}
+
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+
+provider "cloudflare" {
+  email     = "lutergs@lutergs.dev"
+  api_key   = var.cloudflare-global-api-key
+}
+
+provider "kubectl" {
+  config_path = "~/.kube/config"
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
 
 provider "aws" {
   access_key  = var.aws-access-key
@@ -29,42 +68,7 @@ provider "github" {
   token       = var.github-access-token
 }
 
-module "infra" {
-  source = "./infra"
-  vultr-apk-token   = var.vultr-apk-token
-  aws-access-key    = var.aws-access-key
-  aws-secret-key    = var.aws-secret-key
-  aws-region        = var.aws-region
-}
 
-module "lutergs-backend" {
-  source = "./applications/lutergs-backend"
-  aws-github-oidc-provider  = aws_iam_openid_connect_provider.github-oidc-provider
-  aws-access-key            = var.aws-access-key
-  aws-secret-key            = var.aws-secret-key
-  aws-region                = var.aws-region
-  aws-ecr-key               = var.aws-ecr-key
-  github-access-token       = var.github-access-token
-  kubernetes-secret         = var.lutergs-backend-kubernetes-secret
-  kubernetes-version        = module.infra.k8s-version
-}
-
-module "lutergs-backend-batch" {
-  source = "./applications/lutergs-backend-batch"
-  aws-github-oidc-provider  = aws_iam_openid_connect_provider.github-oidc-provider
-  aws-access-key            = var.aws-access-key
-  aws-secret-key            = var.aws-secret-key
-  aws-region                = var.aws-region
-  aws-ecr-key               = var.aws-ecr-key
-  github-access-token       = var.github-access-token
-  kubernetes-secret         = var.lutergs-backend-batch-kubernetes-secret
-  kubernetes-version        = module.infra.k8s-version
-}
-
-module "lutergs-infra" {
-  source = "./applications/lutergs-infra"
-  github-access-token       = var.github-access-token
-}
 
 
 

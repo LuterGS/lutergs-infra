@@ -53,16 +53,16 @@ resource "github_actions_environment_variable" "ecr-repository" {
   value = aws_ecr_repository.default.name
 }
 
-#resource "github_actions_environment_variable" "k8s-namespace" {
-#  repository = github_repository.default.name
-#  environment = github_repository_environment.main.environment
-#  variable_name = "K8S_NAMESPACE"
-#  value = kubernetes_deployment.default.metadata[0].namespace
-#}
-#
-#resource "github_actions_environment_variable" "k8s-deployment-name" {
-#  repository = github_repository.default.name
-#  environment = github_repository_environment.main.environment
-#  variable_name = "K8S_DEPLOYMENT_NAME"
-#  value = kubernetes_deployment.default.metadata[0].name
-#}
+resource "github_actions_environment_variable" "k8s-namespace" {
+  repository = github_repository.default.name
+  environment = github_repository_environment.main.environment
+  variable_name = "K8S_NAMESPACE"
+  value = kubernetes_deployment.default.metadata[0].namespace
+}
+
+resource "github_actions_environment_variable" "k8s-deployment-name" {
+  repository = github_repository.default.name
+  environment = github_repository_environment.main.environment
+  variable_name = "K8S_DEPLOYMENT_NAME"
+  value = kubernetes_deployment.default.metadata[0].name
+}
