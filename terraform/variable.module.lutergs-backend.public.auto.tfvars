@@ -1,0 +1,1 @@
+lutergs-backend-domain = "api"

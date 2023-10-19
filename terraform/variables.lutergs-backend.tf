@@ -1,0 +1,1 @@
+variable "lutergs-backend-domain" { type = string }

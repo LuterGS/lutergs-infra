@@ -37,7 +37,7 @@ resource "kubernetes_secret" "deployment-secret" {
 
     FRONTEND_URL                = "https://lutergs.dev"
     FRONTEND_PWA_URL            = "https://app.lutergs.dev"
-    BACKEND_URL                 = "https://api2.lutergs.dev"
+    BACKEND_URL                 = "https://${var.domain-name}.lutergs.dev"
     ROOT_DOMAIN                 = "lutergs.dev"
 
     OAUTH_CLIENT_ID             = var.kubernetes-secret.OAUTH_CLIENT_ID

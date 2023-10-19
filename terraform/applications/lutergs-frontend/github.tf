@@ -1,17 +1,17 @@
 resource "github_repository" "default" {
-  name = "lutergs-backend"
-  description = "lutergs.dev 의 백엔드 페이지입니다."
+  name = "lutergs-frontend"
+  description = "lutergs.dev 의 프론트 페이지입니다."
   visibility = "public"
+  has_downloads = true
+  has_issues = true
+  has_projects = true
+  has_wiki = true
+  homepage_url = "https://lutergs.dev"
 }
 
 resource "github_actions_secret" "k8s-config" {
   repository = github_repository.default.name
   secret_name = "K8S_CONFIG"
-}
-
-resource "github_actions_secret" "jwt-token-pem" {
-  repository = github_repository.default.name
-  secret_name = "JWT_TOKEN_PEM"
 }
 
 resource "github_actions_variable" "k8s-version" {
@@ -39,13 +39,6 @@ resource "github_actions_environment_variable" "aws-region" {
   value = var.aws-region
 }
 
-resource "github_actions_environment_variable" "active-profile" {
-  repository = github_repository.default.name
-  environment = github_repository_environment.main.environment
-  variable_name = "PROFILE"
-  value = "server"
-}
-
 resource "github_actions_environment_variable" "ecr-repository" {
   repository = github_repository.default.name
   environment = github_repository_environment.main.environment
@@ -65,11 +58,4 @@ resource "github_actions_environment_variable" "k8s-deployment-name" {
   environment = github_repository_environment.main.environment
   variable_name = "K8S_DEPLOYMENT_NAME"
   value = kubernetes_deployment.default.metadata[0].name
-}
-
-resource "github_actions_environment_variable" "dockerfile-name" {
-  repository = github_repository.default.name
-  environment = github_repository_environment.main.environment
-  variable_name = "DOCKERFILE"
-  value = "Dockerfile-JVM"
 }

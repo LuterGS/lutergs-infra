@@ -34,7 +34,7 @@ terraform {
 }
 
 provider "vultr" {
-  api_key     = var.vultr-apk-token
+  api_key     = var.vultr-api-token
   rate_limit  = 100
   retry_limit = 3
 }
@@ -44,8 +44,8 @@ provider "kubernetes" {
 }
 
 provider "cloudflare" {
-  email     = "lutergs@lutergs.dev"
-  api_key   = var.cloudflare-global-api-key
+  email         = "lutergs@lutergs.dev"
+  api_key       = var.cloudflare-global-api-key
 }
 
 provider "kubectl" {

@@ -1,4 +1,16 @@
-# Account permissions
+// Zone setting
+resource "cloudflare_account" "default" {
+  name = "Lutergs@lutergs.dev's Account"
+  // imported via "terraform import"
+}
+
+resource "cloudflare_zone" "lutergs_dev" {
+  account_id = cloudflare_account.default.id
+  zone = "lutergs.dev"
+}
+
+
+// Account permissions
 data "cloudflare_api_token_permission_groups" "all" {}
 
 resource "cloudflare_api_token" "cert-manager-api-token" {

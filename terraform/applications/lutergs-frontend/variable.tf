@@ -18,6 +18,3 @@ variable "cloudflare-zone-id"         { type = string }
 
 // vultr variables
 variable "load-balancer-public-ipv4"  { type = string }
-
-// domain settings
-variable "domain-name"                { type = string }

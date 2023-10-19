@@ -59,12 +59,37 @@ resource "kubernetes_ingress_v1" "nginx-ingress" {
   }
   spec {
     ingress_class_name = "nginx"
+
+    // rule for lutergs-frontend
     tls {
-      hosts = ["api2.lutergs.dev"]
-      secret_name = "api2-lutergs-dev-tls"
+      hosts = ["lutergs.dev"]
+      secret_name = "lutergs-dev-tls"
     }
     rule {
-      host = "api2.lutergs.dev"
+      host = "lutergs.dev"
+      http {
+        path {
+          path = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = module.lutergs-frontend.kubernetes-service
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // rule for lutergs-backend
+    tls {
+      hosts = ["${var.lutergs-backend-domain}.lutergs.dev"]
+      secret_name = "${var.lutergs-backend-domain}-lutergs-dev-tls"
+    }
+    rule {
+      host = "${var.lutergs-backend-domain}.lutergs.dev"
       http {
         path {
           path = "/"
