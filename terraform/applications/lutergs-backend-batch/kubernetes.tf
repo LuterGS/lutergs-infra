@@ -12,9 +12,9 @@ resource "kubernetes_secret" "ecr-docker-access-secret" {
       auths = {
         trimsuffix(aws_ecr_repository.default.repository_url, "/lutergs-backend-batch") = {
           "username" = "AWS"
-          "password" = var.aws-ecr-key.key
+          "password" = var.aws-ecr-key
           "email" = "lutergs@lutergs.dev"
-          "auth" = base64encode("${"AWS"}:${var.aws-ecr-key.key}")
+          "auth" = base64encode("${"AWS"}:${var.aws-ecr-key}")
         }
       }
     })

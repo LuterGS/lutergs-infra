@@ -23,5 +23,8 @@ provider "github" {
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  host                    = var.k8s-host
+  client_certificate      = base64decode(var.k8s-client-certificate)
+  client_key              = base64decode(var.k8s-client-key)
+  cluster_ca_certificate  = base64decode(var.k8s-cluster-ca-certificate)
 }

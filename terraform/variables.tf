@@ -1,17 +1,68 @@
 // aws variables
-variable "aws-access-key"     { type = string }
-variable "aws-secret-key"     { type = string }
-variable "aws-region"         { type = string }
-variable "aws-ecr-key"        { type = map(string) }
+variable "aws-access-key" {
+  type      = string
+  sensitive = true
+}
+variable "aws-secret-key" {
+  type      = string
+  sensitive = true
+}
+variable "aws-region" {
+  type = string
+}
+variable "aws-ecr-key" {
+  type      = string
+  sensitive = true
+}
 
 // github variables
-variable "github-access-token" { type = string }
+variable "github-access-token" {
+  type      = string
+  sensitive = true
+}
 
 // vultr variables
-variable "vultr-api-token" { type = string }
+variable "vultr-api-token" {
+  type      = string
+  sensitive = true
+}
 
 // cloudflare variables
-variable "cloudflare-global-api-key"        { type = string }
+variable "cloudflare-global-api-key" {
+  type      = string
+  sensitive = true
+}
+
+// oracle setting
+variable "oracle-tenancy-ocid" {
+  type      = string
+  sensitive = true
+}
+variable "oracle-user-ocid" {
+  type      = string
+  sensitive = true
+}
+variable "oracle-private-key" {
+  type      = string
+  sensitive = true
+}
+variable "oracle-fingerprint" {
+  type      = string
+  sensitive = true
+}
+variable "oracle-region" {
+  type      = string
+}
+variable "oracle-instance-ssh-authorized-keys" {
+  type      = map(string)
+  sensitive = true
+}
+
+// kubernetes variables
+variable "k8s-host"                   { type = string }
+variable "k8s-client-certificate"     { type = string }
+variable "k8s-client-key"             { type = string }
+variable "k8s-cluster-ca-certificate" { type = string }
 
 // module variables
 variable "lutergs-backend-kubernetes-secret"        { type = map(any) }

@@ -1,4 +1,12 @@
 terraform {
+  cloud {
+    organization = "LuterGS"
+
+    workspaces {
+      name = "lutergs-server"
+    }
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -29,6 +37,10 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
     }
+
+    oci = {
+      source = "oracle/oci"
+    }
   }
   required_version = ">= 1.2.0"
 }
@@ -40,7 +52,10 @@ provider "vultr" {
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  host                    = var.k8s-host
+  client_certificate      = base64decode(var.k8s-client-certificate)
+  client_key              = base64decode(var.k8s-client-key)
+  cluster_ca_certificate  = base64decode(var.k8s-cluster-ca-certificate)
 }
 
 provider "cloudflare" {
@@ -49,12 +64,19 @@ provider "cloudflare" {
 }
 
 provider "kubectl" {
-  config_path = "~/.kube/config"
+  load_config_file = false
+  host                    = var.k8s-host
+  client_certificate      = base64decode(var.k8s-client-certificate)
+  client_key              = base64decode(var.k8s-client-key)
+  cluster_ca_certificate  = base64decode(var.k8s-cluster-ca-certificate)
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"
+    host                    = var.k8s-host
+    client_certificate      = base64decode(var.k8s-client-certificate)
+    client_key              = base64decode(var.k8s-client-key)
+    cluster_ca_certificate  = base64decode(var.k8s-cluster-ca-certificate)
   }
 }
 
@@ -66,6 +88,14 @@ provider "aws" {
 
 provider "github" {
   token       = var.github-access-token
+}
+
+provider "oci" {
+  tenancy_ocid = var.oracle-tenancy-ocid
+  user_ocid = var.oracle-user-ocid
+  private_key = var.oracle-private-key
+  fingerprint = var.oracle-fingerprint
+  region = var.oracle-region
 }
 
 

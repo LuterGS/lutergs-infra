@@ -4,7 +4,7 @@ resource "kubernetes_namespace" "cert-manager" {
   }
 }
 
-resource "kubernetes_secret" "cloudflare-apk-token" {
+resource "kubernetes_secret" "cloudflare-api-token" {
   metadata {
     name      = "cloudflare-api-token"
     namespace = kubernetes_namespace.cert-manager.metadata[0].name
@@ -26,7 +26,7 @@ module "cert_manager" {
         cloudflare = {
           email = "lutergs@lutergs.dev"
           apiTokenSecretRef = {
-            name = kubernetes_secret.cloudflare-apk-token.metadata[0].name
+            name = kubernetes_secret.cloudflare-api-token.metadata[0].name
             key = "api-token"
           }
         }
@@ -42,10 +42,16 @@ resource "kubernetes_namespace" "nginx-ingress" {
   }
 }
 
+resource "kubernetes_namespace" "lutergs" {
+  metadata {
+    name = "lutergs"
+  }
+}
 
 module "nginx-controller" {
   source  = "terraform-iaac/nginx-controller/helm"
   namespace = kubernetes_namespace.nginx-ingress.metadata[0].name
+  ip_address = oci_core_instance.k8s-master.public_ip
 }
 
 resource "kubernetes_ingress_v1" "nginx-ingress" {
@@ -54,7 +60,7 @@ resource "kubernetes_ingress_v1" "nginx-ingress" {
     name = "nginx-ingress"
     namespace = "lutergs"
     annotations = {
-      "cert-manager.io/cluster-issuer" = "cert-manager"#module.cert_manager.cluster_issuer_name
+      "cert-manager.io/cluster-issuer" = module.cert_manager.cluster_issuer_name
     }
   }
   spec {
