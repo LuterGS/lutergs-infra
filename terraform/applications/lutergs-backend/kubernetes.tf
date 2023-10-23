@@ -1,7 +1,7 @@
 resource "kubernetes_secret" "jwt-token" {
   metadata {
     name = "lutergs-backend-pem"
-    namespace = "lutergs"
+    namespace = var.kubernetes.namespace
   }
 
   // openssl genpkey -out rsakey.pem -algorithm RSA -pkeyopt rsa_keygen_bits:2048
@@ -13,7 +13,7 @@ resource "kubernetes_secret" "jwt-token" {
 resource "kubernetes_secret" "deployment-secret" {
   metadata {
     name = "lutergs-backend-envs"
-    namespace = "lutergs"
+    namespace = var.kubernetes.namespace
   }
 
   data = {
@@ -37,7 +37,7 @@ resource "kubernetes_secret" "deployment-secret" {
 
     FRONTEND_URL                = "https://lutergs.dev"
     FRONTEND_PWA_URL            = "https://app.lutergs.dev"
-    BACKEND_URL                 = "https://${var.domain-name}.lutergs.dev"
+    BACKEND_URL                 = "https://${var.else.domain-name}.lutergs.dev"
     ROOT_DOMAIN                 = "lutergs.dev"
 
     OAUTH_CLIENT_ID             = var.kubernetes-secret.OAUTH_CLIENT_ID
@@ -61,7 +61,7 @@ resource "kubernetes_deployment" "default" {
 
   metadata {
     name = "lutergs-backend"
-    namespace = "lutergs"
+    namespace = var.kubernetes.namespace
     labels = {
       app = "lutergs-backend"
     }

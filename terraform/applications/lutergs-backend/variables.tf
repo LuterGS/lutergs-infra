@@ -1,26 +1,43 @@
-// aws settings
-variable "aws-github-oidc-provider"   {}
-variable "aws-access-key"             { type = string }
-variable "aws-secret-key"             { type = string }
-variable "aws-region"                 { type = string }
+// new setting
+variable "aws" {
+  type = object({
+    github-oidc-provider = any
+    access-key = string
+    secret-key = string
+    region = string
+  })
+}
+variable "github" {
+  type = object({
+    access-token = string
+    owner = string
+  })
+}
+variable "kubernetes" {
+  type = object({
+    host = string
+    client-certificate = string
+    client-key = string
+    cluster-ca-certificate = string
+    namespace = string
+    load-balancer-ipv4 = string
+  })
+}
+variable "cloudflare" {
+  type = object({
+    email = string
+    global-api-key = string
+    zone-id = string
+  })
+}
+variable "else" {
+  type = object({
+    domain-name = string
+  })
+}
 
-// github settings
-variable "github-access-token"        { type = string }
+//else
+variable "kubernetes-secret" {
+  type =  map(any)
+}
 
-// kubernetes settings
-variable "k8s-host"                   { type = string }
-variable "k8s-client-certificate"     { type = string }
-variable "k8s-client-key"             { type = string }
-variable "k8s-cluster-ca-certificate" { type = string }
-variable "kubernetes-secret"          { type = map(string) }
-variable "kubernetes-version"         { type = string }
-
-// cloudflare variables
-variable "cloudflare-global-api-key"  { type = string }
-variable "cloudflare-zone-id"         { type = string }
-
-// vultr variables
-variable "load-balancer-public-ipv4"  { type = string }
-
-// domain settings
-variable "domain-name"                { type = string }

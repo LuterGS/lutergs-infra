@@ -7,6 +7,7 @@ variable "aws-ecr-key"                { type = string }
 
 // github settings
 variable "github-access-token"        { type = string }
+variable "github-owner"               { type = string }
 
 // kubernetes settings
 variable "k8s-host"                   { type = string }

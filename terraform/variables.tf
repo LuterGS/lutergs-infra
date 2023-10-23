@@ -20,6 +20,11 @@ variable "github-access-token" {
   type      = string
   sensitive = true
 }
+variable "github-owner" {
+  type      = string
+  sensitive = false
+  default   = "lutergs-dev"
+}
 
 // vultr variables
 variable "vultr-api-token" {
