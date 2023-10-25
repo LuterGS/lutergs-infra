@@ -149,7 +149,7 @@ variable "canonical-ubuntu-22-04-minial-aarch64-20230928-image-ocid" {
 }
 
 
-resource "oci_core_instance" "k8s-master" {
+resource "oci_core_instance" "k8s-master-bak" {
   display_name        = "k8s-master"
   availability_domain = data.oci_identity_availability_domains.all_availability_domains.availability_domains[0].name
   create_vnic_details {
@@ -176,7 +176,7 @@ resource "oci_core_instance" "k8s-master" {
   }
 }
 
-resource "oci_core_instance" "k8s-worker-1" {
+resource "oci_core_instance" "k8s-worker-1-bak" {
   display_name        = "k8s-worker-1"
   availability_domain = data.oci_identity_availability_domains.all_availability_domains.availability_domains[0].name
   create_vnic_details {
@@ -203,7 +203,7 @@ resource "oci_core_instance" "k8s-worker-1" {
   }
 }
 
-resource "oci_core_instance" "k8s-worker-2" {
+resource "oci_core_instance" "k8s-worker-2-bak" {
   display_name        = "k8s-worker-2"
   availability_domain = data.oci_identity_availability_domains.all_availability_domains.availability_domains[0].name
   create_vnic_details {
@@ -230,7 +230,7 @@ resource "oci_core_instance" "k8s-worker-2" {
   }
 }
 
-resource "oci_core_instance" "k8s-worker-3" {
+resource "oci_core_instance" "k8s-worker-3-bak" {
   display_name        = "k8s-worker-3"
   availability_domain = data.oci_identity_availability_domains.all_availability_domains.availability_domains[0].name
   create_vnic_details {
