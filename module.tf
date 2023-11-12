@@ -17,7 +17,7 @@ module "lutergs-backend" {
     client-key = var.k8s-client-key
     cluster-ca-certificate = var.k8s-cluster-ca-certificate
     namespace = kubernetes_namespace.lutergs.metadata[0].name
-    load-balancer-ipv4 = oci_core_instance.k8s-master-bak.public_ip
+    load-balancer-ipv4 = "152.70.95.33"
   }
   cloudflare = {
     email = "lutergs@lutergs.dev"
@@ -63,7 +63,8 @@ module "lutergs-frontend" {
   kubernetes-version          = "v1.27.2"
   cloudflare-global-api-key   = var.cloudflare-global-api-key
   cloudflare-zone-id          = cloudflare_zone.lutergs_dev.id
-  load-balancer-public-ipv4   = oci_core_instance.k8s-master-bak.public_ip
+#  load-balancer-public-ipv4   = oci_core_instance.k8s-master-1.public_ip
+  load-balancer-public-ipv4 = "152.70.95.33"
 }
 
 module "lutergs-infra" {

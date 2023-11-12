@@ -30,7 +30,7 @@ terraform {
 
     helm = {
       source  = "hashicorp/helm"
-      version = "2.5.0"
+      version = ">= 2.11.0"
     }
 
     cloudflare = {
@@ -40,6 +40,11 @@ terraform {
 
     oci = {
       source = "oracle/oci"
+    }
+
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.23.0"
     }
   }
   required_version = ">= 1.2.0"

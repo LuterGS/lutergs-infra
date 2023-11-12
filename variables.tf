@@ -62,6 +62,10 @@ variable "oracle-instance-ssh-authorized-keys" {
   type      = map(string)
   sensitive = true
 }
+variable "oracle-instance-ssh-new-authorized-keys" {
+  type      = map(string)
+  sensitive = true
+}
 
 // kubernetes variables
 variable "k8s-host"                   { type = string }

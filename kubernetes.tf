@@ -51,7 +51,7 @@ resource "kubernetes_namespace" "lutergs" {
 module "nginx-controller" {
   source  = "terraform-iaac/nginx-controller/helm"
   namespace = kubernetes_namespace.nginx-ingress.metadata[0].name
-  ip_address = oci_core_instance.k8s-master-bak.public_ip
+  ip_address = "152.70.95.33"
 }
 
 resource "kubernetes_ingress_v1" "nginx-ingress" {
