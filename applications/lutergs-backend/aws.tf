@@ -6,6 +6,10 @@ resource "aws_ecr_repository" "default" {
   }
 }
 
+output "aws_ecr_repository_url" {
+  value = split("/",aws_ecr_repository.default.repository_url)[0]
+}
+
 resource "aws_ecr_lifecycle_policy" "default" {
   repository = aws_ecr_repository.default.name
   policy     = <<EOF

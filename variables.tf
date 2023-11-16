@@ -1,79 +1,73 @@
-// aws variables
-variable "aws-access-key" {
-  type      = string
-  sensitive = true
-}
-variable "aws-secret-key" {
-  type      = string
-  sensitive = true
-}
-variable "aws-region" {
-  type = string
-}
-variable "aws-ecr-key" {
-  type      = string
+variable "aws-info" {
+  type = object({
+    access-key = string
+    secret-key = string
+    region = string
+    ecr-key = string
+  })
   sensitive = true
 }
 
-// github variables
-variable "github-access-token" {
-  type      = string
-  sensitive = true
-}
-variable "github-owner" {
-  type      = string
-  sensitive = false
-  default   = "lutergs-dev"
-}
-
-// vultr variables
-variable "vultr-api-token" {
-  type      = string
+variable "github-info" {
+  type = object({
+    access-token = string
+    owner = string
+  })
   sensitive = true
 }
 
-// cloudflare variables
-variable "cloudflare-global-api-key" {
-  type      = string
+variable "cloudflare-info" {
+  type = object({
+    email = string
+    global-api-key = string
+  })
   sensitive = true
 }
 
-// oracle setting
-variable "oracle-tenancy-ocid" {
-  type      = string
-  sensitive = true
-}
-variable "oracle-user-ocid" {
-  type      = string
-  sensitive = true
-}
-variable "oracle-private-key" {
-  type      = string
-  sensitive = true
-}
-variable "oracle-fingerprint" {
-  type      = string
-  sensitive = true
-}
-variable "oracle-region" {
-  type      = string
-}
-variable "oracle-instance-ssh-authorized-keys" {
-  type      = map(string)
-  sensitive = true
-}
-variable "oracle-instance-ssh-new-authorized-keys" {
-  type      = map(string)
+variable "oci-info" {
+  type = object({
+    tenancy-ocid = string
+    user-ocid = string
+    private-key = string
+    fingerprint = string
+    region = string
+  })
   sensitive = true
 }
 
-// kubernetes variables
-variable "k8s-host"                   { type = string }
-variable "k8s-client-certificate"     { type = string }
-variable "k8s-client-key"             { type = string }
-variable "k8s-cluster-ca-certificate" { type = string }
+variable "oci-else" {
+  type = object({
+    oracle-instance-ssh-authorized-keys = object({
+      k8s-master = string
+      k8s-worker-1 = string
+      k8s-worker-2 = string
+      k8s-worker-3 = string
+    })
+  })
+  sensitive = true
+}
+
+variable "docker-registry-info" {
+  type = object({
+    username = string
+    token = string
+  })
+  sensitive = true
+}
+
+variable "kubernetes-info" {
+  type = object({
+    host = string
+    client-certificate = string
+    client-key = string
+    cluster-ca-certificate = string
+  })
+  sensitive = true
+}
 
 // module variables
 variable "lutergs-backend-kubernetes-secret"        { type = map(any) }
 variable "lutergs-backend-batch-kubernetes-secret"  { type = map(string) }
 variable "lutergs-frontend-kubernetes-secret"       { type = map(any) }
+
+

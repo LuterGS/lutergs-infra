@@ -83,7 +83,7 @@ resource "kubernetes_deployment" "default" {
       }
       spec {
         image_pull_secrets {
-          name = "lutergs-backend-batch-ecr-access"
+          name = var.kubernetes.image-pull-secret-name
         }
         volume {
           name = "jwt-token"

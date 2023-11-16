@@ -1,11 +1,5 @@
 terraform {
-  cloud {
-    organization = "LuterGS"
-
-    workspaces {
-      name = "lutergs-server"
-    }
-  }
+  backend "pg" {}
 
   required_providers {
     aws = {
@@ -16,11 +10,6 @@ terraform {
     github = {
       source  = "integrations/github"
       version = "~> 5.0"
-    }
-
-    vultr = {
-      source = "vultr/vultr"
-      version = "2.16.1"
     }
 
     kubectl = {
@@ -50,61 +39,53 @@ terraform {
   required_version = ">= 1.2.0"
 }
 
-provider "vultr" {
-  api_key     = var.vultr-api-token
-  rate_limit  = 100
-  retry_limit = 3
-}
-
 provider "kubernetes" {
-  host                    = var.k8s-host
-  client_certificate      = base64decode(var.k8s-client-certificate)
-  client_key              = base64decode(var.k8s-client-key)
-  cluster_ca_certificate  = base64decode(var.k8s-cluster-ca-certificate)
+  host                    = var.kubernetes-info.host
+  client_certificate      = base64decode(var.kubernetes-info.client-certificate)
+  client_key              = base64decode(var.kubernetes-info.client-key)
+  cluster_ca_certificate  = base64decode(var.kubernetes-info.cluster-ca-certificate)
 }
 
 provider "cloudflare" {
-  email         = "lutergs@lutergs.dev"
-  api_key       = var.cloudflare-global-api-key
+  email         = var.cloudflare-info.email
+  api_key       = var.cloudflare-info.global-api-key
 }
 
 provider "kubectl" {
   load_config_file = false
-  host                    = var.k8s-host
-  client_certificate      = base64decode(var.k8s-client-certificate)
-  client_key              = base64decode(var.k8s-client-key)
-  cluster_ca_certificate  = base64decode(var.k8s-cluster-ca-certificate)
+  host                    = var.kubernetes-info.host
+  client_certificate      = base64decode(var.kubernetes-info.client-certificate)
+  client_key              = base64decode(var.kubernetes-info.client-key)
+  cluster_ca_certificate  = base64decode(var.kubernetes-info.cluster-ca-certificate)
 }
 
 provider "helm" {
   kubernetes {
-    host                    = var.k8s-host
-    client_certificate      = base64decode(var.k8s-client-certificate)
-    client_key              = base64decode(var.k8s-client-key)
-    cluster_ca_certificate  = base64decode(var.k8s-cluster-ca-certificate)
+    host                    = var.kubernetes-info.host
+    client_certificate      = base64decode(var.kubernetes-info.client-certificate)
+    client_key              = base64decode(var.kubernetes-info.client-key)
+    cluster_ca_certificate  = base64decode(var.kubernetes-info.cluster-ca-certificate)
   }
 }
 
 provider "aws" {
-  access_key  = var.aws-access-key
-  secret_key  = var.aws-secret-key
-  region      = var.aws-region
+  access_key  = var.aws-info.access-key
+  secret_key  = var.aws-info.secret-key
+  region      = var.aws-info.region
 }
 
 provider "github" {
-  token = var.github-access-token
-  owner = var.github-owner
+  token = var.github-info.access-token
+  owner = var.github-info.owner
 }
 
 provider "oci" {
-  tenancy_ocid = var.oracle-tenancy-ocid
-  user_ocid = var.oracle-user-ocid
-  private_key = var.oracle-private-key
-  fingerprint = var.oracle-fingerprint
-  region = var.oracle-region
+  tenancy_ocid = var.oci-info.tenancy-ocid
+  user_ocid = var.oci-info.user-ocid
+  private_key = var.oci-info.private-key
+  fingerprint = var.oci-info.fingerprint
+  region = var.oci-info.region
 }
-
-
 
 
 

@@ -11,7 +11,19 @@ resource "github_actions_organization_variable" "k8s-version" {
 }
 
 resource "github_actions_organization_variable" "aws-region" {
-  value         = var.aws-region
+  value         = var.aws-info.region
   variable_name = "AWS_REGION"
   visibility    = "all"
+}
+
+resource "github_actions_organization_variable" "dockerhub-username" {
+  value         = var.docker-registry-info.username
+  variable_name = "DOCKERHUB_USERNAME"
+  visibility    = "all"
+}
+
+resource "github_actions_organization_secret" "dockerhub-token" {
+  secret_name = "DOCKERHUB_TOKEN"
+  visibility  = "all"
+  plaintext_value = var.docker-registry-info.token
 }
