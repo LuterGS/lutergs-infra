@@ -37,17 +37,17 @@ data "aws_iam_policy_document" "trust_policy" {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
       type = "Federated"
-      identifiers = [var.aws-github-oidc-provider.arn]
+      identifiers = [var.aws.github-oidc-provider.arn]
       # identifiers = [aws_iam_openid_connect_provider.github-oidc-provider.arn]
     }
     condition {
       test     = "StringEquals"
-      variable = "${trimprefix(var.aws-github-oidc-provider.url, "https://")}:aud"
+      variable = "${trimprefix(var.aws.github-oidc-provider.url, "https://")}:aud"
       values   = ["sts.amazonaws.com"]
     }
     condition {
       test     = "StringLike"
-      variable = "${trimprefix(var.aws-github-oidc-provider.url, "https://")}:sub"
+      variable = "${trimprefix(var.aws.github-oidc-provider.url, "https://")}:sub"
       values   = ["repo:${github_repository.default.full_name}:*"]
     }
   }

@@ -1,33 +1,7 @@
-// TODO : lutergs namespace 를 implement 해야 함. 위치는?
-
-resource "kubernetes_secret" "ecr-docker-access-secret" {
-
-  metadata {
-    name = "lutergs-backend-batch-ecr-access"
-    namespace = "lutergs"
-  }
-
-  data = {
-    ".dockerconfigjson" = jsonencode({
-      auths = {
-        trimsuffix(aws_ecr_repository.default.repository_url, "/lutergs-backend-batch") = {
-          "username" = "AWS"
-          "password" = var.aws-ecr-key
-          "email" = "lutergs@lutergs.dev"
-          "auth" = base64encode("${"AWS"}:${var.aws-ecr-key}")
-        }
-      }
-    })
-  }
-
-  type = "kubernetes.io/dockerconfigjson"
-}
-
-
 resource "kubernetes_secret" "deployment-secret" {
   metadata {
     name = "lutergs-backend-batch-envs"
-    namespace = "lutergs"
+    namespace = var.kubernetes.namespace
   }
 
   data = {
@@ -55,7 +29,7 @@ resource "kubernetes_deployment" "default" {
 
   metadata {
     name = "lutergs-backend-batch"
-    namespace = "lutergs"
+    namespace = var.kubernetes.namespace
     labels = {
       app = "lutergs-backend-batch"
     }
@@ -77,7 +51,7 @@ resource "kubernetes_deployment" "default" {
       }
       spec {
         image_pull_secrets {
-          name = kubernetes_secret.ecr-docker-access-secret.metadata[0].name
+          name = var.kubernetes.image-pull-secret-name
         }
         container {
           image = "${aws_ecr_repository.default.repository_url}:latest"
@@ -105,7 +79,7 @@ resource "kubernetes_deployment" "default" {
 resource "kubernetes_service" "default" {
   metadata {
     name = "lutergs-backend-batch-service"
-    namespace = "lutergs"
+    namespace = var.kubernetes.namespace
   }
 
   spec {

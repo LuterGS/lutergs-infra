@@ -67,7 +67,9 @@ variable "kubernetes-info" {
 
 // module variables
 variable "lutergs-backend-kubernetes-secret"        { type = map(any) }
-variable "lutergs-backend-batch-kubernetes-secret"  { type = map(string) }
+variable "lutergs-backend-batch-kubernetes-secret"  { type = map(any) }
 variable "lutergs-frontend-kubernetes-secret"       { type = map(any) }
+variable "lutergs-frontend-pwa-kubernetes-secret"   { type = map(any) }
+variable "lutergs-frontend-pwa-public"              { type = map(any)}
 
 

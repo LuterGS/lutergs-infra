@@ -111,5 +111,28 @@ resource "kubernetes_ingress_v1" "nginx-ingress" {
         }
       }
     }
+
+    // rule for lutergs-frontend-pwa
+    tls {
+      hosts = ["${var.lutergs-frontend-pwa-public.domain}.lutergs.dev"]
+      secret_name = "${var.lutergs-frontend-pwa-public.domain}-lutergs-dev-tls"
+    }
+    rule {
+      host = "${var.lutergs-frontend-pwa-public.domain}.lutergs.dev"
+      http {
+        path {
+          path = "/"
+          path_type = "Prefix"
+          backend {
+            service {
+              name = module.lutergs-frontend-pwa.kubernetes-service
+              port {
+                number = 80
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

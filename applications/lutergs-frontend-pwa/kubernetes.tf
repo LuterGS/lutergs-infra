@@ -1,15 +1,15 @@
 resource "kubernetes_secret" "deployment-secret" {
   metadata {
-    name = "lutergs-frontend-envs"
+    name = "lutergs-frontend-pwa-envs"
     namespace = var.kubernetes.namespace
   }
 
   data = {
     HOST                    = var.kubernetes-secret.HOST
     PORT                    = var.kubernetes-secret.PORT
-    PUBLIC_TINYMCE_APIKEY   = var.kubernetes-secret.PUBLIC_TINYMCE_APIKEY
     PUBLIC_BACKEND_SERVER   = var.kubernetes-secret.PUBLIC_BACKEND_SERVER
-    PUBLIC_OAUTH_CLIENT_ID  = var.kubernetes-secret.PUBLIC_OAUTH_CLIENT_ID
+    PUBLIC_PUSH_KEY         = var.kubernetes-secret.PUBLIC_PUSH_KEY
+    PUBLIC_ENV              = var.kubernetes-secret.PUBLIC_ENV
   }
 }
 
@@ -17,10 +17,10 @@ resource "kubernetes_secret" "deployment-secret" {
 resource "kubernetes_deployment" "default" {
 
   metadata {
-    name = "lutergs-frontend"
+    name = "lutergs-frontend-pwa"
     namespace = var.kubernetes.namespace
     labels = {
-      app = "lutergs-frontend"
+      app = "lutergs-frontend-pwa"
     }
   }
 
@@ -28,14 +28,14 @@ resource "kubernetes_deployment" "default" {
     replicas = "2"
     selector {
       match_labels = {
-        app = "lutergs-frontend"
+        app = "lutergs-frontend-pwa"
       }
     }
     progress_deadline_seconds = 60
     template {
       metadata {
         labels = {
-          app = "lutergs-frontend"
+          app = "lutergs-frontend-pwa"
         }
       }
       spec {
@@ -45,7 +45,7 @@ resource "kubernetes_deployment" "default" {
         container {
           image = "${aws_ecr_repository.default.repository_url}:latest"
           image_pull_policy = "Always"
-          name = "lutergs-frontend"
+          name = "lutergs-frontend-pwa"
 
           env_from {
             secret_ref {
@@ -62,7 +62,7 @@ resource "kubernetes_deployment" "default" {
 
 resource "kubernetes_service" "default" {
   metadata {
-    name = "lutergs-frontend-service"
+    name = "lutergs-frontend-pwa-service"
     namespace = var.kubernetes.namespace
   }
 

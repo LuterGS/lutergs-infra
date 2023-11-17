@@ -13,19 +13,19 @@ terraform {
 }
 
 provider "aws" {
-  access_key = var.aws-access-key
-  secret_key = var.aws-secret-key
-  region = var.aws-region
+  access_key = var.aws.access-key
+  secret_key = var.aws.secret-key
+  region = var.aws.region
 }
 
 provider "github" {
-  token = var.github-access-token
-  owner = var.github-owner
+  token = var.github.access-token
+  owner = var.github.owner
 }
 
 provider "kubernetes" {
-  host                    = var.k8s-host
-  client_certificate      = base64decode(var.k8s-client-certificate)
-  client_key              = base64decode(var.k8s-client-key)
-  cluster_ca_certificate  = base64decode(var.k8s-cluster-ca-certificate)
+  host                    = var.kubernetes.host
+  client_certificate      = base64decode(var.kubernetes.client-certificate)
+  client_key              = base64decode(var.kubernetes.client-key)
+  cluster_ca_certificate  = base64decode(var.kubernetes.cluster-ca-certificate)
 }

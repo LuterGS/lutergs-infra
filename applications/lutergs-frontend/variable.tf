@@ -1,24 +1,39 @@
-// aws settings
-variable "aws-github-oidc-provider"   {}
-variable "aws-access-key"             { type = string }
-variable "aws-secret-key"             { type = string }
-variable "aws-region"                 { type = string }
+variable "aws" {
+  type = object({
+    github-oidc-provider = any
+    access-key = string
+    secret-key = string
+    region = string
+  })
+  sensitive = true
+}
 
-// github settings
-variable "github-access-token"        { type = string }
-variable "github-owner"               { type = string }
+variable "github" {
+  type = object({
+    access-token = string
+    owner = string
+  })
+  sensitive = true
+}
 
-// kubernetes settings
-variable "k8s-host"                   { type = string }
-variable "k8s-client-certificate"     { type = string }
-variable "k8s-client-key"             { type = string }
-variable "k8s-cluster-ca-certificate" { type = string }
-variable "kubernetes-secret"          { type = map(string) }
-variable "kubernetes-version"         { type = string }
+variable "kubernetes" {
+  type = object({
+    host = string
+    client-certificate = string
+    client-key = string
+    cluster-ca-certificate = string
+    namespace = string
+    load-balancer-ipv4 = string
+    image-pull-secret-name = string
+  })
+}
 
-// cloudflare variables
-variable "cloudflare-global-api-key"  { type = string }
-variable "cloudflare-zone-id"         { type = string }
+variable "cloudflare" {
+  type = object({
+    email = string
+    global-api-key = string
+    zone-id = string
+  })
+}
 
-// vultr variables
-variable "load-balancer-public-ipv4"  { type = string }
+variable "kubernetes-secret" { type = map(any) }

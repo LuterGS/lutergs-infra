@@ -59,7 +59,7 @@ resource "kubernetes_cron_job_v1" "default" {
             }
 
             container {
-              image = "koo04034/aws-secret-updater:latest"
+              image = "koo04034/aws-ecr-secret-updater:latest"
               image_pull_policy = "Always"
               name = "aws-secret-updater"
 

@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "default" {
-  name = "lutergs-frontend"
+  name = "lutergs-frontend-pwa"
   image_tag_mutability = "MUTABLE"
   image_scanning_configuration {
     scan_on_push = false
@@ -74,7 +74,7 @@ data "aws_iam_policy_document" "default_policy" {
 
 // create role of github actions
 resource "aws_iam_role" "default_role" {
-  name = "github-repo-lutergs-frontend"
+  name = "github-repo-lutergs-frontend-pwa"
   description = "role of github actions in repo lutergs-frontend"
   assume_role_policy = data.aws_iam_policy_document.trust_policy.json
   inline_policy {
