@@ -36,7 +36,7 @@ resource "kubernetes_deployment" "default" {
   }
 
   spec {
-    replicas = "2"
+    replicas = "1"    // if replica is larger then 1, alarms will trigger more than 1 times.
     selector {
       match_labels = {
         app = "lutergs-backend-batch"
