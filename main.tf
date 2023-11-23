@@ -35,6 +35,11 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.23.0"
     }
+
+    confluent = {
+      source = "confluentinc/confluent"
+      version = "1.55.0"
+    }
   }
   required_version = ">= 1.2.0"
 }
@@ -87,6 +92,10 @@ provider "oci" {
   region = var.oci-info.region
 }
 
+provider "confluent" {
+  cloud_api_key = var.confluent-cloud-info.cloud_api_key
+  cloud_api_secret = var.confluent-cloud-info.cloud_api_secret
+}
 
 
 

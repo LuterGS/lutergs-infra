@@ -136,3 +136,18 @@ resource "kubernetes_ingress_v1" "nginx-ingress" {
     }
   }
 }
+
+
+#// PostgreSQL HA
+#
+#resource "helm_release" "postgresql-ha" {
+#  name = "postgresql-ha"
+#
+#  repository = "oci://registry-1.docker.io/bitnamicharts"
+#  chart = "postgresql-ha"
+#
+#  set {
+#    name  = ""
+#    value = ""
+#  }
+#}

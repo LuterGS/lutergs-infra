@@ -65,6 +65,24 @@ variable "kubernetes-info" {
   sensitive = true
 }
 
+variable "confluent-cloud-info" {
+  type = object({
+    cloud_api_key = string
+    cloud_api_secret = string
+  })
+  sensitive = true
+}
+
+variable "postgresql-info" {
+  type = object({
+    username = string
+    password = string
+    database = string
+    oci-private-key-indent = string
+  })
+  sensitive = true
+}
+
 // module variables
 variable "lutergs-backend-kubernetes-secret"        { type = map(any) }
 variable "lutergs-backend-batch-kubernetes-secret"  { type = map(any) }
