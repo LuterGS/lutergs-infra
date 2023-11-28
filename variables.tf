@@ -73,12 +73,20 @@ variable "confluent-cloud-info" {
   sensitive = true
 }
 
-variable "postgresql-info" {
+variable "grafana-cloud-info" {
+  type= object({
+    cloud-api-token = string
+  })
+}
+
+variable "spring-cloud-data-flow-info" {
   type = object({
-    username = string
-    password = string
-    database = string
-    oci-private-key-indent = string
+    database-host = string
+    database-port = string
+    dataflow-password = string
+    skipper-password = string
+    kafka-cluster-api-key = string
+    kafka-cluster-api-secret = string
   })
   sensitive = true
 }

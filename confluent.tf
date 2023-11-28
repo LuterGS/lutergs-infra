@@ -49,18 +49,3 @@ resource "confluent_api_key" "default" {
     prevent_destroy = true
   }
 }
-
-resource "confluent_kafka_cluster_config" "default" {
-  kafka_cluster {
-    id = confluent_kafka_cluster.default.id
-  }
-  rest_endpoint = confluent_kafka_cluster.default.rest_endpoint
-  config = {
-    "auto.create.topics.enable" = "true"
-    "log.retention.ms" = "604800000"
-  }
-  credentials {
-    key    = confluent_api_key.default.id
-    secret = confluent_api_key.default.secret
-  }
-}

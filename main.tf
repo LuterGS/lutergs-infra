@@ -40,6 +40,11 @@ terraform {
       source = "confluentinc/confluent"
       version = "1.55.0"
     }
+
+    grafana = {
+      source = "grafana/grafana"
+      version = ">= 1.40.1"
+    }
   }
   required_version = ">= 1.2.0"
 }
@@ -96,6 +101,11 @@ provider "confluent" {
   cloud_api_key = var.confluent-cloud-info.cloud_api_key
   cloud_api_secret = var.confluent-cloud-info.cloud_api_secret
 }
+
+#provider "grafana" {
+#  alias = "cloud"
+#  cloud_api_key = var.grafana-cloud-info.cloud-api-token
+#}
 
 
 
