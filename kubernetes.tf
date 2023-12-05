@@ -14,6 +14,12 @@ resource "kubernetes_secret" "cloudflare-api-token" {
   }
 }
 
+resource "kubernetes_namespace" "lutergs" {
+  metadata {
+    name = "lutergs"
+  }
+}
+
 module "cert_manager" {
   source                = "terraform-iaac/cert-manager/kubernetes"
 
@@ -36,118 +42,34 @@ module "cert_manager" {
 }
 
 
-resource "kubernetes_namespace" "nginx-ingress" {
+resource "kubernetes_service" "frontend" {
   metadata {
-    name = "nginx-ingress"
-  }
-}
-
-resource "kubernetes_namespace" "lutergs" {
-  metadata {
-    name = "lutergs"
-  }
-}
-
-module "nginx-controller" {
-  source  = "terraform-iaac/nginx-controller/helm"
-  namespace = kubernetes_namespace.nginx-ingress.metadata[0].name
-  ip_address = "152.70.95.33"
-}
-
-resource "kubernetes_ingress_v1" "nginx-ingress" {
-  wait_for_load_balancer = true
-  metadata {
-    name = "nginx-ingress"
-    namespace = "lutergs"
-    annotations = {
-      "cert-manager.io/cluster-issuer" = module.cert_manager.cluster_issuer_name
-    }
+    namespace = kubernetes_namespace.kong.metadata[0].name
+    name = "frontend"
   }
   spec {
-    ingress_class_name = "nginx"
+    type = "ExternalName"
+    external_name = "${module.lutergs-frontend.kubernetes-service}.${kubernetes_namespace.lutergs.metadata[0].name}.svc.cluster.local"
 
-    // rule for lutergs-frontend
-    tls {
-      hosts = ["lutergs.dev"]
-      secret_name = "lutergs-dev-tls"
-    }
-    rule {
-      host = "lutergs.dev"
-      http {
-        path {
-          path = "/"
-          path_type = "Prefix"
-          backend {
-            service {
-              name = module.lutergs-frontend.kubernetes-service
-              port {
-                number = 80
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // rule for lutergs-backend
-    tls {
-      hosts = ["${var.lutergs-backend-domain}.lutergs.dev"]
-      secret_name = "${var.lutergs-backend-domain}-lutergs-dev-tls"
-    }
-    rule {
-      host = "${var.lutergs-backend-domain}.lutergs.dev"
-      http {
-        path {
-          path = "/"
-          path_type = "Prefix"
-          backend {
-            service {
-              name = module.lutergs-backend.kubernetes-service
-              port {
-                number = 80
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // rule for lutergs-frontend-pwa
-    tls {
-      hosts = ["${var.lutergs-frontend-pwa-public.domain}.lutergs.dev"]
-      secret_name = "${var.lutergs-frontend-pwa-public.domain}-lutergs-dev-tls"
-    }
-    rule {
-      host = "${var.lutergs-frontend-pwa-public.domain}.lutergs.dev"
-      http {
-        path {
-          path = "/"
-          path_type = "Prefix"
-          backend {
-            service {
-              name = module.lutergs-frontend-pwa.kubernetes-service
-              port {
-                number = 80
-              }
-            }
-          }
-        }
-      }
-    }
   }
 }
-
-
-#// PostgreSQL HA
-#
-#resource "helm_release" "postgresql-ha" {
-#  name = "postgresql-ha"
-#
-#  repository = "oci://registry-1.docker.io/bitnamicharts"
-#  chart = "postgresql-ha"
-#
-#  set {
-#    name  = ""
-#    value = ""
-#  }
-#}
+resource "kubernetes_service" "frontend-pwa" {
+  metadata {
+    namespace = kubernetes_namespace.kong.metadata[0].name
+    name = "frontend-pwa"
+  }
+  spec {
+    type = "ExternalName"
+    external_name = "${module.lutergs-frontend-pwa.kubernetes-service}.${kubernetes_namespace.lutergs.metadata[0].name}.svc.cluster.local"
+  }
+}
+resource "kubernetes_service" "backend" {
+  metadata {
+    namespace = kubernetes_namespace.kong.metadata[0].name
+    name = "backend"
+  }
+  spec {
+    type = "ExternalName"
+    external_name = "${module.lutergs-backend.kubernetes-service}.${kubernetes_namespace.lutergs.metadata[0].name}.svc.cluster.local"
+  }
+}
