@@ -22,6 +22,8 @@ variable "kubernetes" {
     namespace = string
     load-balancer-ipv4 = string
     image-pull-secret-name = string
+    ingress-namespace = string
+    ingress-name = string
   })
 }
 variable "cloudflare" {

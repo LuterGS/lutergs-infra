@@ -43,7 +43,11 @@ resource "kubernetes_cron_job_v1" "default" {
     successful_jobs_history_limit = 10
 
     job_template {
-      metadata {}
+      metadata {
+        labels = {
+          "sidecar.istio.io/inject" = "false"
+        }
+      }
       spec {
         backoff_limit = 2
         ttl_seconds_after_finished = 10

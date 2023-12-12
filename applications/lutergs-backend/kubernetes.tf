@@ -133,6 +133,36 @@ resource "kubernetes_service" "default" {
   }
 }
 
+resource "kubernetes_manifest" "virtual-service" {
+  manifest = {
+    apiVersion = "networking.istio.io/v1alpha3"
+    kind = "VirtualService"
+    metadata = {
+      name = "lutergs-backend"
+      namespace = var.kubernetes.namespace
+    }
+    spec = {
+      hosts = ["${var.else.domain-name}.lutergs.dev"]
+      gateways = ["${var.kubernetes.ingress-namespace}/${var.kubernetes.ingress-name}"]
+      http = [{
+        match = [{
+          uri = {
+            prefix = "/"
+          }
+        }]
+        route = [{
+          destination = {
+            host = kubernetes_service.default.metadata[0].name
+            port = {
+              number = kubernetes_service.default.spec[0].port[0].port
+            }
+          }
+        }]
+      }]
+    }
+  }
+}
+
 output "kubernetes-service" {
   value = kubernetes_service.default.metadata[0].name
 }

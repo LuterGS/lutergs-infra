@@ -18,6 +18,8 @@ module "lutergs-backend" {
     namespace               = kubernetes_namespace.lutergs.metadata[0].name
     load-balancer-ipv4      = oci_core_instance.k8s-master.public_ip
     image-pull-secret-name  = module.aws-ecr-secret-updater.kubernetes-secret-name
+    ingress-namespace       = kubernetes_namespace.istio-ingress.metadata[0].name
+    ingress-name            = kubernetes_manifest.istio-gateway.manifest.metadata.name
   }
   cloudflare = {
     email                   = var.cloudflare-info.email
@@ -73,6 +75,8 @@ module "lutergs-frontend" {
     namespace               = kubernetes_namespace.lutergs.metadata[0].name
     load-balancer-ipv4      = oci_core_instance.k8s-master.public_ip
     image-pull-secret-name  = module.aws-ecr-secret-updater.kubernetes-secret-name
+    ingress-namespace       = kubernetes_namespace.istio-ingress.metadata[0].name
+    ingress-name            = kubernetes_manifest.istio-gateway.manifest.metadata.name
   }
   cloudflare = {
     email                   = var.cloudflare-info.email
@@ -102,6 +106,8 @@ module "lutergs-frontend-pwa" {
     namespace               = kubernetes_namespace.lutergs.metadata[0].name
     load-balancer-ipv4      = oci_core_instance.k8s-master.public_ip
     image-pull-secret-name  = module.aws-ecr-secret-updater.kubernetes-secret-name
+    ingress-namespace       = kubernetes_namespace.istio-ingress.metadata[0].name
+    ingress-name            = kubernetes_manifest.istio-gateway.manifest.metadata.name
   }
   cloudflare = {
     email                   = var.cloudflare-info.email
