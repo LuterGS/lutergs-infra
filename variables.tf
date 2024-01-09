@@ -75,8 +75,15 @@ variable "confluent-cloud-info" {
 
 variable "grafana-cloud-info" {
   type= object({
-    cloud-api-token = string
+    prometheus_endpoint = string
+    prometheus_username = string
+    loki_endpoint = string
+    loki_username = string
+    tempo_endpoint = string
+    tempo_username = string
+    api_token = string
   })
+  sensitive = true
 }
 
 variable "spring-cloud-data-flow-info" {

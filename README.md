@@ -6,4 +6,4 @@ lutergs.dev 프로젝트의 인프라를 OpenTofu 로 통합관리하는 reposit
 
 ![Diagram](README.infra.svg)
 
-version : 1.0
+version : 1.1

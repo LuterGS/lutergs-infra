@@ -52,27 +52,27 @@ resource "kubernetes_cron_job_v1" "default" {
         backoff_limit = 2
         ttl_seconds_after_finished = 10
         template {
-          metadata {}
+          metadata {
+            labels = {
+              "sidecar.istio.io/inject" = "false"
+            }
+          }
           spec {
-
             volume {
               name = "kubeconfig"
               secret {
                 secret_name = kubernetes_secret.kubeconfig.metadata[0].name
               }
             }
-
             container {
               image = "koo04034/aws-ecr-secret-updater:latest"
               image_pull_policy = "Always"
               name = "aws-secret-updater"
-
               env_from {
                 secret_ref {
                   name = kubernetes_secret.environment_variables.metadata[0].name
                 }
               }
-
               volume_mount {
                 mount_path = "/etc/secret"
                 name       = "kubeconfig"

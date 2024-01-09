@@ -32,7 +32,8 @@ resource "kubernetes_manifest" "cert" {
       dnsNames = [
         "lutergs.dev",
         "api.lutergs.dev",
-        "app.lutergs.dev"
+        "app.lutergs.dev",
+        "ntfy.lutergs.dev"
       ]
       issuerRef = {
         name = "cert-manager"

@@ -223,6 +223,19 @@ resource "oci_core_security_list" "public" {
       min = 443
     }
   }
+
+  ingress_security_rules {      // allow for ingress OpenVPN, installed on k8s-master VM (not Kubernetes)
+    description = "For OpenVPN"
+    protocol    = "17"
+    source      = "0.0.0.0/0"
+    source_type = "CIDR_BLOCK"
+    stateless   = false
+
+    udp_options {
+      max = 31940
+      min = 31940
+    }
+  }
 }
 
 

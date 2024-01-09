@@ -45,6 +45,20 @@ resource "helm_release" "istio-discovery" {
   namespace = kubernetes_namespace.istio-system.metadata[0].name
   repository = "https://istio-release.storage.googleapis.com/charts"
   chart = "istiod"
+  values = [<<EOF
+meshConfig:
+  enableTracing: true
+  defaultConfig:
+    tracing:
+      zipkin:
+        address: k8s-monitoring-grafana-agent.telemetry.svc.cluster.local:9411
+  extensionProviders:
+    - name: zipkin
+      zipkin:
+        service: k8s-monitoring-grafana-agent.telemetry.svc.cluster.local
+        port: 9411
+EOF
+]
 }
 
 // must be install after istio-discovery is installed

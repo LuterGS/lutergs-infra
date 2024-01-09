@@ -149,3 +149,31 @@ module "aws-ecr-secret-updater" {
     aws-repository-url      = module.lutergs-backend.aws_ecr_repository_url
   }
 }
+
+module "docker-images" {
+  source = "./applications/docker-images"
+  github = {
+    access-token            = var.github-info.access-token
+    owner                   = var.github-info.owner
+  }
+}
+
+module "ntfy" {
+  source = "./applications/ntfy"
+  kubernetes = {
+    host                    = var.kubernetes-info.host
+    client-certificate      = var.kubernetes-info.client-certificate
+    client-key              = var.kubernetes-info.client-key
+    cluster-ca-certificate  = var.kubernetes-info.cluster-ca-certificate
+    namespace               = kubernetes_namespace.lutergs.metadata[0].name
+    load-balancer-ipv4      = oci_core_instance.k8s-master.public_ip
+    image-pull-secret-name  = module.aws-ecr-secret-updater.kubernetes-secret-name
+    ingress-namespace       = kubernetes_namespace.istio-ingress.metadata[0].name
+    ingress-name            = kubernetes_manifest.istio-gateway.manifest.metadata.name
+  }
+  cloudflare = {
+    email                   = var.cloudflare-info.email
+    global-api-key          = var.cloudflare-info.global-api-key
+    zone-id                 = cloudflare_zone.lutergs_dev.id
+  }
+}
