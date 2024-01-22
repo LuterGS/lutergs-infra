@@ -177,3 +177,29 @@ module "ntfy" {
     zone-id                 = cloudflare_zone.lutergs_dev.id
   }
 }
+
+module "coin-trader" {
+  source = "./applications/coin-trader"
+  aws = {
+    github-oidc-provider    = aws_iam_openid_connect_provider.github-oidc-provider
+    access-key              = var.aws-info.access-key
+    secret-key              = var.aws-info.secret-key
+    region                  = var.aws-info.region
+  }
+  github = {
+    access-token            = var.github-info.access-token
+    owner                   = var.github-info.owner
+  }
+  kubernetes = {
+    host                    = var.kubernetes-info.host
+    client-certificate      = var.kubernetes-info.client-certificate
+    client-key              = var.kubernetes-info.client-key
+    cluster-ca-certificate  = var.kubernetes-info.cluster-ca-certificate
+    namespace               = kubernetes_namespace.lutergs.metadata[0].name
+    load-balancer-ipv4      = oci_core_instance.k8s-master.public_ip
+    image-pull-secret-name  = module.aws-ecr-secret-updater.kubernetes-secret-name
+    ingress-namespace       = kubernetes_namespace.istio-ingress.metadata[0].name
+    ingress-name            = kubernetes_manifest.istio-gateway.manifest.metadata.name
+  }
+  kubernetes-secret         = var.coin-trader-kubernetes-secret
+}

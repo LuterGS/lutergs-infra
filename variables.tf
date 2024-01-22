@@ -99,6 +99,7 @@ variable "spring-cloud-data-flow-info" {
 }
 
 // module variables
+variable "coin-trader-kubernetes-secret"            { type = map(any) }
 variable "lutergs-backend-kubernetes-secret"        { type = map(any) }
 variable "lutergs-backend-batch-kubernetes-secret"  { type = map(any) }
 variable "lutergs-frontend-kubernetes-secret"       { type = map(any) }
