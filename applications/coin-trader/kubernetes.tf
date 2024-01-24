@@ -15,12 +15,16 @@ resource "kubernetes_secret" "manager" {
     KAFKA_API_SECRET = var.kubernetes-secret.KAFKA_API_SECRET
     UPBIT_ACCESS_KEY = var.kubernetes-secret.UPBIT_ACCESS_KEY
     UPBIT_SECRET_KEY = var.kubernetes-secret.UPBIT_SECRET_KEY
+    MESSAGE_SENDER_URL      = var.kubernetes-secret.MESSAGE_SENDER_URL
+    MESSAGE_SENDER_TOPIC    = var.kubernetes-secret.MESSAGE_SENDER_TOPIC
+    MESSAGE_SENDER_USERNAME = var.kubernetes-secret.MESSAGE_SENDER_USERNAME
+    MESSAGE_SENDER_PASSWORD = var.kubernetes-secret.MESSAGE_SENDER_PASSWORD
     KUBERNETES_KUBECONFIG_LOCATION = "/var/kube/config"
 
     // worker init setting
     KUBERNETES_NAMESPACE = var.kubernetes.namespace
     KUBERNETES_IMAGE_PULL_SECRET_NAME = var.kubernetes.image-pull-secret-name
-    KUBERNETES_IMAGE_PULL_POLICY = "IfNotPresent"
+    KUBERNETES_IMAGE_PULL_POLICY = "Always"
     KUBERNETES_IMAGE_NAME = "${aws_ecr_repository.worker.repository_url}:latest"
     KUBERNETES_ENV_SECRET_NAME = kubernetes_secret.worker.metadata[0].name
   }
