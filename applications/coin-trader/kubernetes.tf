@@ -19,6 +19,11 @@ resource "kubernetes_secret" "manager" {
     MESSAGE_SENDER_TOPIC    = var.kubernetes-secret.MESSAGE_SENDER_TOPIC
     MESSAGE_SENDER_USERNAME = var.kubernetes-secret.MESSAGE_SENDER_USERNAME
     MESSAGE_SENDER_PASSWORD = var.kubernetes-secret.MESSAGE_SENDER_PASSWORD
+    ORACLE_DESCRIPTOR = var.kubernetes-secret.ORACLE_DESCRIPTOR
+    ORACLE_USERNAME = var.kubernetes-secret.ORACLE_USERNAME
+    ORACLE_PASSWORD = var.kubernetes-secret.ORACLE_PASSWORD
+    ORACLE_MAX_CONN = var.kubernetes-secret.ORACLE_MAX_CONN
+    ORACLE_MIN_CONN = var.kubernetes-secret.ORACLE_MIN_CONN
     KUBERNETES_KUBECONFIG_LOCATION = "/var/kube/config"
 
     // worker init setting
@@ -111,6 +116,23 @@ resource "kubernetes_deployment" "manager" {
           resources {}
         }
       }
+    }
+  }
+}
+
+resource "kubernetes_service" "manager" {
+  metadata {
+    name = "coin-trader-service"
+    namespace = var.kubernetes.namespace
+  }
+
+  spec {
+    selector = {
+      app = kubernetes_deployment.manager.metadata[0].labels.app
+    }
+    port {
+      port = 80
+      target_port = 8080
     }
   }
 }

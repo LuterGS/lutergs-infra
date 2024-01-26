@@ -5,6 +5,7 @@ resource "kubernetes_secret" "deployment-secret" {
   }
 
   data = {
+    SPRING_PROFILES_ACTIVE = "server"
     BACKEND_SERVER_ENDPOINT = var.kubernetes-secret.BACKEND_SERVER_ENDPOINT
     BACKEND_SERVER_TOKEN = var.kubernetes-secret.BACKEND_SERVER_TOKEN
     HEALTH_CHECKER_UUID = var.kubernetes-secret.HEALTH_CHECKER_UUID
