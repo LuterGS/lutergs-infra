@@ -1,3 +1,8 @@
+variable worker_secret_env_name {
+  type = string
+  default = "coin-trade-worker-envs"
+}
+
 resource "kubernetes_secret" "manager" {
   metadata {
     name = "coin-trade-manager-envs"
@@ -5,58 +10,68 @@ resource "kubernetes_secret" "manager" {
   }
 
   data = {
-    SPRING_PROFILES_ACTIVE = "server"
-    MONGO_USERNAME = var.kubernetes-secret.MONGO_USERNAME
-    MONGO_PASSWORD = var.kubernetes-secret.MONGO_PASSWORD
-    MONGO_URL = var.kubernetes-secret.MONGO_URL
-    MONGO_DATABASE = var.kubernetes-secret.MONGO_DATABASE
-    KAFKA_BOOTSTRAP_SERVERS = var.kubernetes-secret.KAFKA_BOOTSTRAP_SERVERS
-    KAFKA_API_KEY = var.kubernetes-secret.KAFKA_API_KEY
-    KAFKA_API_SECRET = var.kubernetes-secret.KAFKA_API_SECRET
-    UPBIT_ACCESS_KEY = var.kubernetes-secret.UPBIT_ACCESS_KEY
-    UPBIT_SECRET_KEY = var.kubernetes-secret.UPBIT_SECRET_KEY
-    MESSAGE_SENDER_URL      = var.kubernetes-secret.MESSAGE_SENDER_URL
-    MESSAGE_SENDER_TOPIC    = var.kubernetes-secret.MESSAGE_SENDER_TOPIC
-    MESSAGE_SENDER_USERNAME = var.kubernetes-secret.MESSAGE_SENDER_USERNAME
-    MESSAGE_SENDER_PASSWORD = var.kubernetes-secret.MESSAGE_SENDER_PASSWORD
-    ORACLE_DESCRIPTOR = var.kubernetes-secret.ORACLE_DESCRIPTOR
-    ORACLE_USERNAME = var.kubernetes-secret.ORACLE_USERNAME
-    ORACLE_PASSWORD = var.kubernetes-secret.ORACLE_PASSWORD
-    ORACLE_MAX_CONN = var.kubernetes-secret.ORACLE_MAX_CONN
-    ORACLE_MIN_CONN = var.kubernetes-secret.ORACLE_MIN_CONN
-    KUBERNETES_KUBECONFIG_LOCATION = "/var/kube/config"
+    SPRING_PROFILES_ACTIVE          = "server"
+    MONGO_USERNAME                  = var.kubernetes-secret.MONGO_USERNAME
+    MONGO_PASSWORD                  = var.kubernetes-secret.MONGO_PASSWORD
+    MONGO_URL                       = var.kubernetes-secret.MONGO_URL
+    MONGO_DATABASE                  = var.kubernetes-secret.MONGO_DATABASE
+    MONGO_OPTION                    = var.kubernetes-secret.MONGO_OPTION
+    KAFKA_BOOTSTRAP_SERVERS         = var.kubernetes-secret.KAFKA_BOOTSTRAP_SERVERS
+    KAFKA_API_KEY                   = var.kubernetes-secret.KAFKA_API_KEY
+    KAFKA_API_SECRET                = var.kubernetes-secret.KAFKA_API_SECRET
+    KAFKA_TRADE_RESULT_TOPIC        = var.kubernetes-secret.KAFKA_TRADE_RESULT_TOPIC
+    KAFKA_DANGER_COIN_TOPIC         = var.kubernetes-secret.KAFKA_DANGER_COIN_TOPIC
+    UPBIT_ACCESS_KEY                = var.kubernetes-secret.UPBIT_ACCESS_KEY
+    UPBIT_SECRET_KEY                = var.kubernetes-secret.UPBIT_SECRET_KEY
+    MESSAGE_SENDER_URL              = var.kubernetes-secret.MESSAGE_SENDER_URL
+    MESSAGE_SENDER_TOPIC            = var.kubernetes-secret.MESSAGE_SENDER_TOPIC
+    MESSAGE_SENDER_USERNAME         = var.kubernetes-secret.MESSAGE_SENDER_USERNAME
+    MESSAGE_SENDER_PASSWORD         = var.kubernetes-secret.MESSAGE_SENDER_PASSWORD
+    INFLUX_HOST_URL                 = var.kubernetes-secret.INFLUX_HOST_URL
+    INFLUX_API_TOKEN                = var.kubernetes-secret.INFLUX_API_TOKEN
+    INFLUX_DATABASE                 = var.kubernetes-secret.INFLUX_DATABASE
+    KUBERNETES_KUBECONFIG_LOCATION  = "/var/kube/config"
 
     // worker init setting
-    KUBERNETES_NAMESPACE = var.kubernetes.namespace
+    PHASE_1_WAIT_MINUTE               = 150
+    PHASE_1_PROFIT_PERCENT            = 1.5
+    PHASE_1_LOSS_PERCENT              = 3
+    PHASE_2_WAIT_MINUTE               = 90
+    PHASE_2_PROFIT_PERCENT            = 0.3
+    PHASE_2_LOSS_PERCENT              = 2
+    PROFIT_MOVING_AVERAGE_BIG         = 30
+    PROFIT_MOVING_AVERAGE_SMALL       = 10
+    KUBERNETES_NAMESPACE              = var.kubernetes.namespace
     KUBERNETES_IMAGE_PULL_SECRET_NAME = var.kubernetes.image-pull-secret-name
-    KUBERNETES_IMAGE_PULL_POLICY = "Always"
-    KUBERNETES_IMAGE_NAME = "${aws_ecr_repository.worker.repository_url}:latest"
-    KUBERNETES_ENV_SECRET_NAME = kubernetes_secret.worker.metadata[0].name
+    KUBERNETES_IMAGE_PULL_POLICY      = "Always"
+    KUBERNETES_IMAGE_NAME             = "${aws_ecr_repository.worker.repository_url}:latest"
+    KUBERNETES_ENV_SECRET_NAME        = var.worker_secret_env_name
   }
 }
 
 
 resource "kubernetes_secret" "worker" {
   metadata {
-    name = "coin-trade-worker-envs"
+    name = var.worker_secret_env_name
     namespace = var.kubernetes.namespace
   }
 
   data = {
-    SPRING_PROFILES_ACTIVE = "server"
-    KAFKA_REST_PROXY_URL = var.kubernetes-secret.KAFKA_REST_PROXY_URL
-    KAFKA_CLUSTER_NAME = var.kubernetes-secret.KAFKA_CLUSTER_NAME
-    KAFKA_API_KEY = var.kubernetes-secret.KAFKA_API_KEY
-    KAFKA_API_SECRET = var.kubernetes-secret.KAFKA_API_SECRET
-    KAFKA_ALARM_TOPIC_NAME = var.kubernetes-secret.KAFKA_ALARM_TOPIC_NAME
-    KAFKA_TRADE_RESULT_NAME = var.kubernetes-secret.KAFKA_TRADE_RESULT_NAME
-    ORACLE_DESCRIPTOR = var.kubernetes-secret.ORACLE_DESCRIPTOR
-    ORACLE_USERNAME = var.kubernetes-secret.ORACLE_USERNAME
-    ORACLE_PASSWORD = var.kubernetes-secret.ORACLE_PASSWORD
-    ORACLE_MAX_CONN = var.kubernetes-secret.ORACLE_MAX_CONN
-    ORACLE_MIN_CONN = var.kubernetes-secret.ORACLE_MIN_CONN
-    UPBIT_ACCESS_KEY = var.kubernetes-secret.UPBIT_ACCESS_KEY
-    UPBIT_SECRET_KEY = var.kubernetes-secret.UPBIT_SECRET_KEY
+    SPRING_PROFILES_ACTIVE    = "server"
+    MONGO_USERNAME            = var.kubernetes-secret.MONGO_USERNAME
+    MONGO_PASSWORD            = var.kubernetes-secret.MONGO_PASSWORD
+    MONGO_URL                 = var.kubernetes-secret.MONGO_URL
+    MONGO_DATABASE            = var.kubernetes-secret.MONGO_DATABASE
+    MONGO_OPTION              = var.kubernetes-secret.MONGO_OPTION
+    KAFKA_REST_PROXY_URL      = var.kubernetes-secret.KAFKA_REST_PROXY_URL
+    KAFKA_CLUSTER_NAME        = var.kubernetes-secret.KAFKA_CLUSTER_NAME
+    KAFKA_API_KEY             = var.kubernetes-secret.KAFKA_API_KEY
+    KAFKA_API_SECRET          = var.kubernetes-secret.KAFKA_API_SECRET
+    KAFKA_ALARM_TOPIC_NAME    = var.kubernetes-secret.KAFKA_DANGER_COIN_TOPIC
+    KAFKA_TRADE_RESULT_NAME   = var.kubernetes-secret.KAFKA_TRADE_RESULT_TOPIC
+    UPBIT_ACCESS_KEY          = var.kubernetes-secret.UPBIT_ACCESS_KEY
+    UPBIT_SECRET_KEY          = var.kubernetes-secret.UPBIT_SECRET_KEY
+    MANAGER_URL               = "http://${kubernetes_service.manager.metadata[0].name}"
   }
 }
 
