@@ -104,6 +104,8 @@ variable "lutergs-backend-kubernetes-secret"        { type = map(any) }
 variable "lutergs-backend-batch-kubernetes-secret"  { type = map(any) }
 variable "lutergs-frontend-kubernetes-secret"       { type = map(any) }
 variable "lutergs-frontend-pwa-kubernetes-secret"   { type = map(any) }
-variable "lutergs-frontend-pwa-public"              { type = map(any)}
+variable "lutergs-frontend-pwa-public"              { type = map(any) }
+variable "muse-backend"                             { type = map(any) }
+variable "muse-websocket-backend"                   { type = map(any) }
 
 

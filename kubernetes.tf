@@ -22,3 +22,21 @@ resource "kubernetes_namespace" "lutergs" {
     }
   }
 }
+
+resource "kubernetes_namespace" "coin-trader" {
+  metadata {
+    name = "coin-trader"
+    labels = {
+      "istio-injection" = "enabled"
+    }
+  }
+}
+
+resource "kubernetes_namespace" "music-share" {
+  metadata {
+    name = "music-share"
+    labels = {
+      "istio-injection" = "enabled"
+    }
+  }
+}

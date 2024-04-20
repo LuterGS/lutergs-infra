@@ -24,6 +24,7 @@ variable "kubernetes" {
     image-pull-secret-name = string
     ingress-namespace = string
     ingress-name = string
+    kubeconfig-file = string
   })
 }
 

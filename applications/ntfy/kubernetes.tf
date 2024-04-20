@@ -1,32 +1,32 @@
-resource "kubernetes_persistent_volume_v1" "k8s-worker-3-pv" {
-  metadata {
-    name = "worker-3-pv"
-  }
-  spec {
-    capacity = {
-      storage = "3Gi"
-    }
-    volume_mode = "Filesystem"
-    access_modes = ["ReadWriteOnce"]
-    persistent_volume_reclaim_policy = "Delete"
-    persistent_volume_source {
-      local {
-        path = "/home/ubuntu/k8s-local-pv"
-      }
-    }
-    node_affinity {
-      required {
-        node_selector_term {
-          match_expressions {
-            key      = "kubernetes.io/hostname"
-            operator = "In"
-            values = ["k8s-worker-3"]
-          }
-        }
-      }
-    }
-  }
-}
+# resource "kubernetes_persistent_volume_v1" "k8s-worker-3-pv" {
+#   metadata {
+#     name = "worker-3-pv"
+#   }
+#   spec {
+#     capacity = {
+#       storage = "3Gi"
+#     }
+#     volume_mode = "Filesystem"
+#     access_modes = ["ReadWriteOnce"]
+#     persistent_volume_reclaim_policy = "Delete"
+#     persistent_volume_source {
+#       local {
+#         path = "/home/ubuntu/k8s-local-pv"
+#       }
+#     }
+#     node_affinity {
+#       required {
+#         node_selector_term {
+#           match_expressions {
+#             key      = "kubernetes.io/hostname"
+#             operator = "In"
+#             values = ["k8s-worker-3"]
+#           }
+#         }
+#       }
+#     }
+#   }
+# }
 
 
 resource "kubernetes_persistent_volume_claim" "default" {

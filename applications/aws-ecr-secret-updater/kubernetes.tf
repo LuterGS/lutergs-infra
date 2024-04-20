@@ -19,7 +19,7 @@ resource "kubernetes_secret" "environment_variables" {
     ACCESS_KEY = aws_iam_access_key.default.id
     SECRET_KEY = aws_iam_access_key.default.secret
     REGION = var.aws.region
-    NAMESPACE = var.kubernetes.namespace
+    NAMESPACE = var.kubernetes.target-namespaces
     SECRET_NAME = var.ecr-access-secret-name
     REPOSITORY_URL = var.kubernetes-secret.aws-repository-url
     REPOSITORY_USERNAME = "AWS"

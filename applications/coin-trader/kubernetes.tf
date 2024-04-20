@@ -3,6 +3,17 @@ variable worker_secret_env_name {
   default = "coin-trade-worker-envs"
 }
 
+resource "kubernetes_secret" "kubeconfig" {
+  metadata {
+    name = "coin-trader-kubeconfig"
+    namespace = var.kubernetes.namespace
+  }
+
+  data = {
+    config = var.kubernetes.kubeconfig-file
+  }
+}
+
 resource "kubernetes_secret" "manager" {
   metadata {
     name = "coin-trade-manager-envs"
@@ -36,7 +47,7 @@ resource "kubernetes_secret" "manager" {
     PHASE_1_WAIT_MINUTE               = 150
     PHASE_1_PROFIT_PERCENT            = 1.5
     PHASE_1_LOSS_PERCENT              = 3
-    PHASE_2_WAIT_MINUTE               = 90
+    PHASE_2_WAIT_MINUTE               = 60
     PHASE_2_PROFIT_PERCENT            = 0.3
     PHASE_2_LOSS_PERCENT              = 2
     PROFIT_MOVING_AVERAGE_BIG         = 30
@@ -87,7 +98,7 @@ resource "kubernetes_deployment" "manager" {
   }
 
   spec {
-    replicas = "2"
+    replicas = "0" # disable coin-trader
     selector {
       match_labels = {
         app = "coin-trade-manager"
@@ -107,7 +118,7 @@ resource "kubernetes_deployment" "manager" {
         volume {
           name = "kubeconfig"
           secret {
-            secret_name = "aws-secret-updater-kubeconfig"
+            secret_name = kubernetes_secret.kubeconfig.metadata[0].name
           }
         }
 

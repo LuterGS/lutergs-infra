@@ -33,7 +33,9 @@ resource "kubernetes_manifest" "cert" {
         "lutergs.dev",
         "api.lutergs.dev",
         "app.lutergs.dev",
-        "ntfy.lutergs.dev"
+        "ntfy.lutergs.dev",
+        "muse.lutergs.dev",
+        "muse-socket.lutergs.dev"
       ]
       issuerRef = {
         name = "cert-manager"

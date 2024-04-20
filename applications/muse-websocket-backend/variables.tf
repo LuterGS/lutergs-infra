@@ -1,5 +1,7 @@
+// new setting
 variable "aws" {
   type = object({
+    github-oidc-provider = any
     access-key = string
     secret-key = string
     region = string
@@ -18,24 +20,27 @@ variable "kubernetes" {
     client-key = string
     cluster-ca-certificate = string
     namespace = string
-    target-namespaces = string
-    kubeconfig-file = string
+    load-balancer-ipv4 = string
+    image-pull-secret-name = string
+    ingress-namespace = string
+    ingress-name = string
   })
 }
-variable "kubernetes-secret" {
+variable "cloudflare" {
   type = object({
-    aws-repository-url = string
+    email = string
+    global-api-key = string
+    zone-id = string
   })
-  sensitive = true
+}
+variable "else" {
+  type = object({
+    domain-name = string
+  })
 }
 
-
-variable "ecr-access-secret-name" {
-  type = string
-  default = "aws-ecr-secret"
-}
-
-output "kubernetes-secret-name" {
-  value = var.ecr-access-secret-name
+//else
+variable "kubernetes-secret" {
+  type =  map(any)
 }
 

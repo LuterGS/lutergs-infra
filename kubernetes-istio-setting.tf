@@ -57,6 +57,13 @@ meshConfig:
       zipkin:
         service: k8s-monitoring-grafana-agent.telemetry.svc.cluster.local
         port: 9411
+
+defaults:
+  pilot:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 500Mi
 EOF
 ]
 }
