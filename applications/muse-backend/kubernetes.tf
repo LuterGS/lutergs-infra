@@ -1,3 +1,19 @@
+resource "kubernetes_secret" "rsa-key-pair" {
+  metadata {
+    name = "muse-backend-rsa-keypair"
+    namespace = var.kubernetes.namespace
+  }
+
+  // openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
+  // openssl rsa -pubout -in private_key.pem -out public_key.pem
+
+  data = {
+    "private.pem" = file("${path.module}/private_key.pem")
+    "public.pem" = file("${path.module}/public_key.pem")
+  }
+}
+
+
 resource "kubernetes_secret" "deployment-secret" {
   metadata {
     name = "muse-backend-envs"
@@ -10,6 +26,8 @@ resource "kubernetes_secret" "deployment-secret" {
     KAFKA_BOOTSTRAP_SERVERS = var.kubernetes-secret.KAFKA_BOOTSTRAP_SERVERS
     KAFKA_CLIENT_ID = var.kubernetes-secret.KAFKA_CLIENT_ID
 
+    ORACLE_USERNAME = var.kubernetes-secret.ORACLE_USERNAME
+    ORACLE_PASSWORD = var.kubernetes-secret.ORACLE_PASSWORD
     ORACLE_DESCRIPTOR_STRING = var.kubernetes-secret.ORACLE_DESCRIPTOR_STRING
 
     REDIS_CLUSTER_NODES = var.kubernetes-secret.REDIS_CLUSTER_NODES
@@ -56,6 +74,14 @@ resource "kubernetes_deployment" "default" {
         image_pull_secrets {
           name = var.kubernetes.image-pull-secret-name
         }
+
+        volume {
+          name = "rsa-keypair"
+          secret {
+            secret_name = kubernetes_secret.rsa-key-pair.metadata[0].namespace
+          }
+        }
+
         container {
           image = "${aws_ecr_repository.default.repository_url}:latest"
           image_pull_policy = "Always"
@@ -90,9 +116,23 @@ resource "kubernetes_deployment" "default" {
             name = "STREAMS_MACHINE_KEY"
             value_from {
               field_ref {
+                // TODO : 나중에 init script 로 trim 후 넣을수 있는지 확인 필요
                 field_path = "metadata.name"
               }
             }
+          }
+          env {
+            name = "RSA_PRIVATE_KEY_PATH"
+            value = "/etc/secret/private_key.pem"
+          }
+          env {
+            name = "RSA_PUBLIC_KEY_PATH"
+            value = "/etc/secret/public_key.pem"
+          }
+          volume_mount {
+            mount_path = "/etc/secret/"
+            name       = "rsa-keypair"
+            read_only  = true
           }
 
           resources {}
