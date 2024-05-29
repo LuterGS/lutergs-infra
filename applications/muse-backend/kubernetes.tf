@@ -13,6 +13,9 @@ resource "kubernetes_secret" "rsa-key-pair" {
   }
 }
 
+# kubectl create secret -n music-share generic kafka-truststore --from-file=truststore.jks=./applications/muse-backend/truststore.jks
+# 로 대체
+
 
 resource "kubernetes_secret" "deployment-secret" {
   metadata {
@@ -25,23 +28,24 @@ resource "kubernetes_secret" "deployment-secret" {
     KAFKA_API_SECRET = var.kubernetes-secret.KAFKA_API_SECRET
     KAFKA_BOOTSTRAP_SERVERS = var.kubernetes-secret.KAFKA_BOOTSTRAP_SERVERS
     KAFKA_CLIENT_ID = var.kubernetes-secret.KAFKA_CLIENT_ID
+    KAFKA_TRUSTSTORE_PASSWORD = var.kubernetes-secret.KAFKA_TRUSTSTORE_PASSWORD
 
     ORACLE_USERNAME = var.kubernetes-secret.ORACLE_USERNAME
     ORACLE_PASSWORD = var.kubernetes-secret.ORACLE_PASSWORD
     ORACLE_DESCRIPTOR_STRING = var.kubernetes-secret.ORACLE_DESCRIPTOR_STRING
 
-    REDIS_CLUSTER_NODES = var.kubernetes-secret.REDIS_CLUSTER_NODES
     REDIS_SENTINEL_MASTER_NAME = var.kubernetes-secret.REDIS_SENTINEL_MASTER_NAME
-    REDIS_SENTINEL_NODE = var.kubernetes-secret.REDIS_SENTINEL_NODE
-
-    KUBERNETES_SERVICE = var.kubernetes-secret.KUBERNETES_SERVICE
+    REDIS_SENTINEL_NODES = var.kubernetes-secret.REDIS_SENTINEL_NODES
 
     STREAMS_COMMUNICATION_KEY = var.kubernetes-secret.STREAMS_COMMUNICATION_KEY
     STREAMS_INPUT_TOPIC_NAME = var.kubernetes-secret.STREAMS_INPUT_TOPIC_NAME
-    STREAMS_TTL_STORE = var.kubernetes-secret.STREAMS_TTL_STORE
     STREAMS_USER_NOW_PLAYING_STORE = var.kubernetes-secret.STREAMS_USER_NOW_PLAYING_STORE
-    STREAMS_STOP_TIMEOUT_SECOND = var.kubernetes-secret.STREAMS_STOP_TIMEOUT_SECOND
+    STREAMS_PAUSE_TIMEOUT_SECOND = var.kubernetes-secret.STREAMS_PAUSE_TIMEOUT_SECOND
+    STREAMS_PLAYING_TIMEOUT_SECOND = var.kubernetes-secret.STREAMS_PLAYING_TIMEOUT_SECOND
     STREAMS_SCAN_FREQUENCY_SECOND = var.kubernetes-secret.STREAMS_SCAN_FREQUENCY_SECOND
+
+    ACCESS_TOKEN_EXPIRE_SECOND = var.kubernetes-secret.ACCESS_TOKEN_EXPIRE_SECOND
+    REFRESH_TOKEN_EXPIRE_SECOND = var.kubernetes-secret.REFRESH_TOKEN_EXPIRE_SECOND
   }
 }
 
@@ -57,7 +61,7 @@ resource "kubernetes_deployment" "default" {
   }
 
   spec {
-    replicas = "0"
+    replicas = "2"
     selector {
       match_labels = {
         app = "muse-backend"
@@ -78,7 +82,14 @@ resource "kubernetes_deployment" "default" {
         volume {
           name = "rsa-keypair"
           secret {
-            secret_name = kubernetes_secret.rsa-key-pair.metadata[0].namespace
+            secret_name = kubernetes_secret.rsa-key-pair.metadata[0].name
+          }
+        }
+
+        volume {
+          name = "kafka-truststore"
+          secret {
+            secret_name = "kafka-truststore"
           }
         }
 
@@ -116,25 +127,36 @@ resource "kubernetes_deployment" "default" {
             name = "STREAMS_MACHINE_KEY"
             value_from {
               field_ref {
-                // TODO : 나중에 init script 로 trim 후 넣을수 있는지 확인 필요
                 field_path = "metadata.name"
               }
             }
           }
           env {
+            name = "MUSE_DOMAIN"
+            value = var.else.domain-name
+          }
+          env {
             name = "RSA_PRIVATE_KEY_PATH"
-            value = "/etc/secret/private_key.pem"
+            value = "/etc/secret/private.pem"
           }
           env {
             name = "RSA_PUBLIC_KEY_PATH"
-            value = "/etc/secret/public_key.pem"
+            value = "/etc/secret/public.pem"
+          }
+          env {
+            name = "KAFKA_TRUSTSTORE_PATH"
+            value = "/etc/truststore/truststore.jks"
           }
           volume_mount {
             mount_path = "/etc/secret/"
             name       = "rsa-keypair"
             read_only  = true
           }
-
+          volume_mount {
+            mount_path = "/etc/truststore"
+            name       = "kafka-truststore"
+            read_only  = true
+          }
           resources {}
         }
       }
@@ -188,7 +210,10 @@ resource "kubernetes_manifest" "virtual-service" {
       namespace = var.kubernetes.namespace
     }
     spec = {
-      hosts = ["${var.else.domain-name}.lutergs.dev"]
+      hosts = [
+        "${var.else.domain-name}.lutergs.dev",
+        "${kubernetes_service.default.metadata[0].name}.${var.kubernetes.namespace}.svc.cluster.local"
+      ]
       gateways = ["${var.kubernetes.ingress-namespace}/${var.kubernetes.ingress-name}"]
       http = [{
         match = [{

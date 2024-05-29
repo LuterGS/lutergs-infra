@@ -21,6 +21,8 @@ resource "kubernetes_secret" "deployment-secret" {
     SUNSET_ALARMER_LATITUDE = var.kubernetes-secret.SUNSET_ALARMER_LATITUDE
     SUNSET_ALARMER_LONGITUDE = var.kubernetes-secret.SUNSET_ALARMER_LONGITUDE
     SUNSET_ALARMER_TOKEN = var.kubernetes-secret.SUNSET_ALARMER_TOKEN
+    MUSE_TEST_USER_ID = var.kubernetes-secret.MUSE_TEST_USER_ID
+    MUSE_TEST_USER_URL = var.kubernetes-secret.MUSE_TEST_USER_URL
   }
 }
 

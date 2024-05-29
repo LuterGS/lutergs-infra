@@ -224,6 +224,19 @@ resource "oci_core_security_list" "public" {
     }
   }
 
+  ingress_security_rules {      // allow access HTTP/3 request from all internet (block access using HTTP)
+    description = "enable only HTTP/3 outbound traffic"
+    protocol    = "17"
+    source      = "0.0.0.0/0"
+    source_type = "CIDR_BLOCK"
+    stateless   = false
+
+    udp_options {
+      min = 443
+      max = 443
+    }
+  }
+
   ingress_security_rules {      // allow for ingress OpenVPN, installed on k8s-master VM (not Kubernetes)
     description = "For OpenVPN"
     protocol    = "17"
